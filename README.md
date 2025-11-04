@@ -12,20 +12,32 @@ Once GitHub Pages is enabled, the game will be available at:
 - **Classic Gameplay**: Control the snake with arrow keys to eat food and grow
 - **Score Tracking**: Current score and persistent high score (saved in browser)
 - **Game Controls**: Start, Pause/Resume, and Reset buttons
-- **Keyboard Shortcuts**:
+- **Desktop Controls**:
   - Arrow Keys: Control snake direction
   - Space/P: Pause/Resume game
+- **Mobile Controls** (iPhone/iPad optimized):
+  - Swipe gestures for direction control
+  - On-screen D-pad buttons
+  - Touch-optimized interface
 - **Collision Detection**: Wall and self-collision with game over
 - **Modern UI**: Beautiful gradient design with smooth animations
-- **Responsive**: Works on both desktop and mobile devices
+- **Fully Responsive**: Optimized for both desktop and mobile devices
 
 ## How to Play
 
+**Desktop:**
 1. Click "Start Game" or press any arrow key to begin
 2. Use arrow keys to control the snake's direction
 3. Eat the red food to grow and increase your score
 4. Avoid hitting walls or your own tail
 5. Try to beat your high score!
+
+**Mobile (iPhone/iPad):**
+1. Tap "Start Game" or swipe on the canvas to begin
+2. Use swipe gestures or on-screen D-pad buttons to control direction
+3. Swipe up/down/left/right to change the snake's direction
+4. Eat the red food to grow your snake
+5. Avoid walls and your tail!
 
 ## Local Development
 

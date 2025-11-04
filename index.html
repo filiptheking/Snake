@@ -14,8 +14,22 @@
             <div class="high-score">High Score: <span id="high-score">0</span></div>
         </div>
         <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+        <!-- Mobile touch controls -->
+        <div class="mobile-controls">
+            <div class="dpad">
+                <button id="upBtn" class="dpad-btn up">▲</button>
+                <div class="dpad-middle">
+                    <button id="leftBtn" class="dpad-btn left">◄</button>
+                    <div class="dpad-center"></div>
+                    <button id="rightBtn" class="dpad-btn right">►</button>
+                </div>
+                <button id="downBtn" class="dpad-btn down">▼</button>
+            </div>
+        </div>
+
         <div class="controls">
-            <p>Use Arrow Keys to control the snake</p>
+            <p class="desktop-hint">Use Arrow Keys or Swipe to control the snake</p>
             <button id="startBtn">Start Game</button>
             <button id="pauseBtn">Pause</button>
             <button id="resetBtn">Reset</button>

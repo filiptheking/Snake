@@ -248,5 +248,117 @@ startBtn.addEventListener('click', startGame);
 pauseBtn.addEventListener('click', pauseGame);
 resetBtn.addEventListener('click', resetGame);
 
+// Touch controls for mobile
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+const minSwipeDistance = 30; // Minimum distance for a swipe to be registered
+
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: false });
+
+canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+}, { passive: false });
+
+function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+
+    // Check if swipe distance is sufficient
+    if (absDeltaX < minSwipeDistance && absDeltaY < minSwipeDistance) {
+        return;
+    }
+
+    // Start game on first swipe
+    if (!gameRunning) {
+        startGame();
+    }
+
+    // Determine swipe direction
+    if (absDeltaX > absDeltaY) {
+        // Horizontal swipe
+        if (deltaX > 0 && snake.dx === 0) {
+            // Swipe right
+            snake.dx = 1;
+            snake.dy = 0;
+        } else if (deltaX < 0 && snake.dx === 0) {
+            // Swipe left
+            snake.dx = -1;
+            snake.dy = 0;
+        }
+    } else {
+        // Vertical swipe
+        if (deltaY > 0 && snake.dy === 0) {
+            // Swipe down
+            snake.dy = 1;
+            snake.dx = 0;
+        } else if (deltaY < 0 && snake.dy === 0) {
+            // Swipe up
+            snake.dy = -1;
+            snake.dx = 0;
+        }
+    }
+}
+
+// On-screen direction button controls
+function setupDirectionButtons() {
+    const upBtn = document.getElementById('upBtn');
+    const downBtn = document.getElementById('downBtn');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+
+    if (upBtn) {
+        upBtn.addEventListener('click', () => {
+            if (!gameRunning) startGame();
+            if (snake.dy === 0) {
+                snake.dy = -1;
+                snake.dx = 0;
+            }
+        });
+    }
+
+    if (downBtn) {
+        downBtn.addEventListener('click', () => {
+            if (!gameRunning) startGame();
+            if (snake.dy === 0) {
+                snake.dy = 1;
+                snake.dx = 0;
+            }
+        });
+    }
+
+    if (leftBtn) {
+        leftBtn.addEventListener('click', () => {
+            if (!gameRunning) startGame();
+            if (snake.dx === 0) {
+                snake.dx = -1;
+                snake.dy = 0;
+            }
+        });
+    }
+
+    if (rightBtn) {
+        rightBtn.addEventListener('click', () => {
+            if (!gameRunning) startGame();
+            if (snake.dx === 0) {
+                snake.dx = 1;
+                snake.dy = 0;
+            }
+        });
+    }
+}
+
 // Initialize game
 resetGame();
+setupDirectionButtons();
