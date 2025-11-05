@@ -1,0 +1,42 @@
+name: Daily Property Search
+
+on:
+  schedule:
+    # Run daily at 20:00 UTC (21:00 CET / 22:00 CEST)
+    # Note: GitHub Actions uses UTC time
+    # Adjust based on timezone: 20:00 CET = 19:00 UTC (winter) or 18:00 UTC (summer)
+    - cron: '0 19 * * *'  # 19:00 UTC = 20:00 CET (winter time)
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  search-properties:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run property search
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: npm start -- --now
+
+      - name: Log completion
+        if: always()
+        run: |
+          echo "Search completed at $(date)"
+          echo "Status: ${{ job.status }}"
