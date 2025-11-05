@@ -4,15 +4,20 @@ const { scrapeObjektvision } = require('./scraper');
 const { filterPropertiesByDistance } = require('./distance');
 const { sendEmail } = require('./mailer');
 
+// Hardcoded location settings for Fältvägen busshållplats, Märsta/Arlanda
+const LOCATION = {
+  busStopLat: 59.6196,
+  busStopLng: 17.8555,
+  maxDistance: 1000, // meters
+  name: 'Fältvägens busshållplats, Märsta/Arlanda'
+};
+
 // Configuration from environment variables
 const config = {
   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
   emailUser: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
   recipientEmail: process.env.RECIPIENT_EMAIL,
-  busStopLat: parseFloat(process.env.BUS_STOP_LAT),
-  busStopLng: parseFloat(process.env.BUS_STOP_LNG),
-  maxDistance: parseInt(process.env.MAX_DISTANCE),
   runHour: parseInt(process.env.RUN_HOUR || 20),
   runMinute: parseInt(process.env.RUN_MINUTE || 0)
 };
@@ -25,8 +30,8 @@ async function searchAndNotify() {
   console.log('🏡 TOMTSÖKARE - Starting Daily Search');
   console.log('===========================================');
   console.log(`📅 Time: ${new Date().toLocaleString('sv-SE')}`);
-  console.log(`📍 Location: Fältvägens busshållplats, Märsta/Arlanda`);
-  console.log(`🚶 Max distance: ${config.maxDistance}m walking\n`);
+  console.log(`📍 Location: ${LOCATION.name}`);
+  console.log(`🚶 Max distance: ${LOCATION.maxDistance}m walking\n`);
 
   try {
     // Step 1: Scrape properties from Objektvision
@@ -44,9 +49,9 @@ async function searchAndNotify() {
     // Step 2: Filter by walking distance
     const nearbyProperties = await filterPropertiesByDistance(
       properties,
-      config.busStopLat,
-      config.busStopLng,
-      config.maxDistance,
+      LOCATION.busStopLat,
+      LOCATION.busStopLng,
+      LOCATION.maxDistance,
       config.googleMapsApiKey
     );
 
@@ -58,7 +63,7 @@ async function searchAndNotify() {
 
     console.log('\n===========================================');
     console.log('✅ Search completed successfully!');
-    console.log(`📊 Results: ${nearbyProperties.length} properties found within ${config.maxDistance}m`);
+    console.log(`📊 Results: ${nearbyProperties.length} properties found within ${LOCATION.maxDistance}m`);
     console.log('===========================================\n');
 
   } catch (error) {
@@ -75,10 +80,7 @@ function validateConfig() {
     'googleMapsApiKey',
     'emailUser',
     'emailPass',
-    'recipientEmail',
-    'busStopLat',
-    'busStopLng',
-    'maxDistance'
+    'recipientEmail'
   ];
 
   const missing = required.filter(key => !config[key]);
@@ -91,6 +93,8 @@ function validateConfig() {
   }
 
   console.log('✅ Configuration validated');
+  console.log(`📍 Search location: ${LOCATION.name}`);
+  console.log(`📏 Max walking distance: ${LOCATION.maxDistance}m`);
 }
 
 /**

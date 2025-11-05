@@ -33,9 +33,6 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          BUS_STOP_LAT: ${{ secrets.BUS_STOP_LAT }}
-          BUS_STOP_LNG: ${{ secrets.BUS_STOP_LNG }}
-          MAX_DISTANCE: ${{ secrets.MAX_DISTANCE }}
         run: npm start -- --now
 
       - name: Log completion
