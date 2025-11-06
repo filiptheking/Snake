@@ -8,7 +8,7 @@ const { sendEmail } = require('./mailer');
 const LOCATION = {
   busStopLat: 59.6196,
   busStopLng: 17.8555,
-  maxDistance: 3000, // meters
+  maxDistance: 5000, // meters
   name: 'Fältvägens busshållplats, Märsta/Arlanda'
 };
 
