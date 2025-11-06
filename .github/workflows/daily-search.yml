@@ -17,12 +17,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      - name: Show git info (debug)
+        run: |
+          echo "Current commit: $(git rev-parse HEAD)"
+          echo "Current branch: $(git branch --show-current)"
+          echo "Latest commits:"
+          git log --oneline -3
 
       - name: Install dependencies
         run: npm ci
