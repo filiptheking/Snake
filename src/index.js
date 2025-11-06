@@ -42,7 +42,7 @@ async function searchAndNotify() {
       await sendEmail([], config.recipientEmail, {
         user: config.emailUser,
         pass: config.emailPass
-      });
+      }, LOCATION.maxDistance);
       return;
     }
 
@@ -59,7 +59,7 @@ async function searchAndNotify() {
     await sendEmail(nearbyProperties, config.recipientEmail, {
       user: config.emailUser,
       pass: config.emailPass
-    });
+    }, LOCATION.maxDistance);
 
     console.log('\n===========================================');
     console.log('✅ Search completed successfully!');

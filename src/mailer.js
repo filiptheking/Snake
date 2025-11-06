@@ -5,9 +5,10 @@ const nodemailer = require('nodemailer');
  * @param {Array} properties - Array of properties within walking distance
  * @param {string} recipientEmail - Email address to send to
  * @param {Object} emailConfig - Email configuration (user, pass)
+ * @param {number} maxDistance - Maximum walking distance in meters
  * @returns {Promise<boolean>} Success status
  */
-async function sendEmail(properties, recipientEmail, emailConfig) {
+async function sendEmail(properties, recipientEmail, emailConfig, maxDistance = 1000) {
   console.log(`📧 Preparing email to ${recipientEmail}...`);
 
   try {
@@ -25,8 +26,8 @@ async function sendEmail(properties, recipientEmail, emailConfig) {
       ? `🏡 ${properties.length} Ledig${properties.length > 1 ? 'a' : ''} Tomt${properties.length > 1 ? 'er' : ''} nära Fältvägen Busshållplats!`
       : '📭 Inga nya lediga tomter idag nära Fältvägen';
 
-    const htmlContent = generateEmailHTML(properties);
-    const textContent = generateEmailText(properties);
+    const htmlContent = generateEmailHTML(properties, maxDistance);
+    const textContent = generateEmailText(properties, maxDistance);
 
     // Send email
     const info = await transporter.sendMail({
@@ -49,9 +50,10 @@ async function sendEmail(properties, recipientEmail, emailConfig) {
 /**
  * Generate HTML email content
  * @param {Array} properties - Properties to display
+ * @param {number} maxDistance - Maximum walking distance in meters
  * @returns {string} HTML string
  */
-function generateEmailHTML(properties) {
+function generateEmailHTML(properties, maxDistance = 1000) {
   const currentDate = new Date().toLocaleDateString('sv-SE', {
     weekday: 'long',
     year: 'numeric',
@@ -80,7 +82,7 @@ function generateEmailHTML(properties) {
             <p>Daglig sökning - ${currentDate}</p>
           </div>
           <div class="content">
-            <p>Ingen ledig tomt hittades idag inom 1000m gångavstånd från <strong>Fältvägens busshållplats</strong> i Märsta/Arlanda.</p>
+            <p>Ingen ledig tomt hittades idag inom ${maxDistance}m gångavstånd från <strong>Fältvägens busshållplats</strong> i Märsta/Arlanda.</p>
             <p>Systemet kommer fortsätta söka dagligen kl 20:00 och meddela dig när något hittas! 🔍</p>
           </div>
           <div class="footer">
@@ -123,7 +125,7 @@ function generateEmailHTML(properties) {
           <h1>🏡 Nya Lediga Tomter Hittade!</h1>
           <p>${currentDate}</p>
           <p style="font-size: 18px; margin-top: 10px;">
-            ${properties.length} tomt${properties.length > 1 ? 'er' : ''} inom 1000m från Fältvägens busshållplats
+            ${properties.length} tomt${properties.length > 1 ? 'er' : ''} inom ${maxDistance}m från Fältvägens busshållplats
           </p>
         </div>
         <div class="content">
@@ -132,7 +134,7 @@ function generateEmailHTML(properties) {
         <div class="footer">
           <p>Automatisk daglig sökning via Objektvision.se och Google Maps API</p>
           <p>📍 Fältvägens busshållplats, Märsta/Arlanda</p>
-          <p>🚶 Max gångavstånd: 1000 meter</p>
+          <p>🚶 Max gångavstånd: ${maxDistance} meter</p>
         </div>
       </div>
     </body>
@@ -143,16 +145,17 @@ function generateEmailHTML(properties) {
 /**
  * Generate plain text email content
  * @param {Array} properties - Properties to display
+ * @param {number} maxDistance - Maximum walking distance in meters
  * @returns {string} Plain text string
  */
-function generateEmailText(properties) {
+function generateEmailText(properties, maxDistance = 1000) {
   const currentDate = new Date().toLocaleDateString('sv-SE');
 
   if (properties.length === 0) {
     return `
 TOMTSÖKARE - ${currentDate}
 
-Ingen ledig tomt hittades idag inom 1000m gångavstånd från Fältvägens busshållplats i Märsta/Arlanda.
+Ingen ledig tomt hittades idag inom ${maxDistance}m gångavstånd från Fältvägens busshållplats i Märsta/Arlanda.
 
 Systemet kommer fortsätta söka dagligen kl 20:00 och meddela dig när något hittas!
 
@@ -176,14 +179,14 @@ TOMTSÖKARE - ${currentDate}
 
 🎉 ${properties.length} LEDIG${properties.length > 1 ? 'A' : ''} TOMT${properties.length > 1 ? 'ER' : ''} HITTADE!
 
-Inom 1000m gångavstånd från Fältvägens busshållplats, Märsta/Arlanda:
+Inom ${maxDistance}m gångavstånd från Fältvägens busshållplats, Märsta/Arlanda:
 
 ${propertyList}
 
 ---
 Automatisk daglig sökning via Objektvision.se och Google Maps API
 Fältvägens busshållplats, Märsta/Arlanda
-Max gångavstånd: 1000 meter
+Max gångavstånd: ${maxDistance} meter
   `;
 }
 
